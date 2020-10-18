@@ -1,0 +1,51 @@
+{
+    "version": "2.0.0",
+    "inputs": [
+        {
+            "id": "sam-options",
+            "description": "option values for aws-sam cli.",
+            "type": "promptString",
+            "default": "--debug-port 5858",
+        },
+        {
+            "id": "profile",
+            "description": "AWS profile name.",
+            "default": "default",
+            "type": "promptString"
+        },
+    ],
+    "tasks": [
+        {
+            "label": "Initialize Repository",
+            "type": "shell",
+            "command": [
+                "docker run --rm -ti -v ~/.aws:/root/.aws amazon/aws-cli configure --profile ${input:profile} --region ap-northeast-1",
+                "&& npm install",
+                "&& npm install -g aws-cdk",
+                "&& cdk bootstrap --profile ${input:profile}"
+            ]
+        },
+        {
+            "label": "AWS: sam local start-api",
+            "type": "shell",
+            "command": [
+                "export NODE_ENV=development",
+                "&& npm run build",
+                "&& cdk synth --no-staging > ./template.yaml",
+                "&& sam local start-api -t ./template.yaml ${input:sam-options}"
+            ],
+            "isBackground": true
+        },
+        {
+            "label": "AWS: cdk deploy",
+            "type": "shell",
+            "command": [
+                "export NODE_ENV=production",
+                "&& export AWS_PROFILE=${input:profile}",
+                "&& npm run build",
+                "&& cdk deploy -v"
+            ],
+            "isBackground": true
+        },
+    ]
+}
