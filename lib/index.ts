@@ -14,11 +14,12 @@ export const handler = async () => {
         count: 10,
         exclude_replies: true,
         include_entities: true,
-        trim_user: true
+        trim_user: false
     }).then(data => {
         return data.filter((tweet: any) =>
-            tweet.retweeted === false
-            && Date.parse(tweet.created_at) > Date.now() - 60 * 1000
+            Date.parse(tweet.created_at) > Date.now() - 600 * 1000
+            && !tweet.retweeted_status
+            && !tweet.quoted_status
             && tweet.entities.media
             && tweet.text.match(/肉|おにく/)
         )
