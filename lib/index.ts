@@ -28,7 +28,7 @@ export const handler = async () => {
     const posts = await Promise.all(tweets.map(async (tweet: any) => {
         return await client.post('statuses/update', {
             in_reply_to_status_id: tweet.id,
-            status: 'にくうううううううううううう🍖',
+            status: `@${tweet.user.screen_name} にくうううううううううううう🍖`,
             trim_user: true
         })
             .then(data => data)
