@@ -11,7 +11,7 @@ const client = new Twitter({
 
 export const handler: ScheduledHandler = async () => {
     try {
-        const tweets = (await client.get('statuses/home_timeline', {
+        const tweets: ResponseData[] = (await client.get('statuses/home_timeline', {
             exclude_replies: false,
             include_entities: true,
             trim_user: false
@@ -25,7 +25,7 @@ export const handler: ScheduledHandler = async () => {
 
         console.log(tweets)
 
-        await Promise.all(tweets.map(async (tweet: any) => {
+        await Promise.all(tweets.map(async (tweet) => {
             await client.post('statuses/update', {
                 in_reply_to_status_id: tweet.id_str,
                 status: `@${tweet.user.screen_name} にくうううううううううううう🍖`,
