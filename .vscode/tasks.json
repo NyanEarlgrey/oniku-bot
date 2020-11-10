@@ -2,17 +2,11 @@
     "version": "2.0.0",
     "inputs": [
         {
-            "id": "sam-options",
-            "description": "option values for aws-sam cli.",
-            "type": "promptString",
-            "default": "--debug-port 5858",
-        },
-        {
             "id": "profile",
             "description": "AWS profile name.",
             "default": "default",
             "type": "promptString"
-        },
+        }
     ],
     "tasks": [
         {
@@ -26,26 +20,14 @@
             ]
         },
         {
-            "label": "AWS: sam local start-api",
+            "label": "Remove Cached Files",
             "type": "shell",
             "command": [
-                "export NODE_ENV=development",
-                "&& npm run build",
-                "&& cdk synth --no-staging > ./template.yaml",
-                "&& sam local start-api -t ./template.yaml ${input:sam-options}"
-            ],
-            "isBackground": true
-        },
-        {
-            "label": "AWS: cdk deploy",
-            "type": "shell",
-            "command": [
-                "export NODE_ENV=production",
-                "&& export AWS_PROFILE=${input:profile}",
-                "&& npm run build",
-                "&& cdk deploy -v"
-            ],
-            "isBackground": true
-        },
+                "rm -rf .parcel-cache/ cdk.out/ node_modules/",
+                "&& rm -f $(gfind bin/ lib/ test/ -name \"*.d.ts\" -o -name \"*.js\")",
+                "&& rm -f $(find bin/ lib/ test/ -name \"*.d.ts\" -o -name \"*.js\")",
+                "&& npm install"
+            ]
+        }
     ]
 }
