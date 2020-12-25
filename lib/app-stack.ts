@@ -16,6 +16,7 @@ export class AppStack extends cdk.Stack {
         API_KEY: process.env.API_KEY as string,
         API_KEY_SECRET: process.env.API_KEY_SECRET as string
       },
+      timeout: cdk.Duration.seconds(10),
       tracing: Tracing.ACTIVE,
       reservedConcurrentExecutions: 1
     })
