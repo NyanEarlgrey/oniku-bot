@@ -9,16 +9,14 @@
     "watch": "tsc -w",
     "test": "jest",
     "cdk": "cdk",
-    "start": "ts-node index.ts"
+    "precdk": "export $(cat .env | grep -v ^# | xargs)"
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.113.0",
-    "@aws-cdk/aws-apigateway": "^1.113.0",
-    "@aws-cdk/aws-events": "^1.113.0",
-    "@aws-cdk/aws-events-targets": "^1.113.0",
-    "@aws-cdk/aws-lambda": "^1.113.0",
+    "@aws-cdk/aws-ec2": "^1.113.0",
+    "@aws-cdk/aws-ecs": "^1.113.0",
     "@aws-cdk/aws-lambda-nodejs": "^1.113.0",
-    "@aws-cdk/aws-secretsmanager": "^1.113.0",
+    "@aws-cdk/core": "^1.113.0",
     "@types/aws-lambda": "^8.10.78",
     "@types/jest": "^26.0.24",
     "@types/node": "16.3.1",
@@ -31,10 +29,7 @@
     "typescript": "~4.3.5"
   },
   "dependencies": {
-    "@aws-cdk/core": "^1.113.0",
-    "aws-lambda": "^1.0.6",
     "aws-sdk": "^2.944.0",
-    "axios": "^0.21.1",
     "dotenv": "^10.0.0",
     "source-map-support": "^0.5.19"
   }

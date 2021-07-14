@@ -1,40 +1,45 @@
-import { Tracing } from '@aws-cdk/aws-lambda'
 import * as cdk from '@aws-cdk/core'
-import * as events from '@aws-cdk/aws-events'
-import * as eventsTargets from '@aws-cdk/aws-events-targets'
-import * as lambda from '@aws-cdk/aws-lambda-nodejs'
-import * as secrets from '@aws-cdk/aws-secretsmanager'
-require('dotenv').config()
+import * as ecs from '@aws-cdk/aws-ecs'
+import * as ec2 from '@aws-cdk/aws-ec2'
+import path from 'path'
+import dotenv from 'dotenv'
+dotenv.config()
 
 export class AppStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props)
 
-    const credentials = new secrets.Secret(this, 'TwitterCredentials', { description: 'twitter credentials for oniku-bot.', generateSecretString: undefined })
-
-    const getTweetLambda = new lambda.NodejsFunction(this, 'oniku', {
-      environment: {
-        ACCESS_TOKEN: process.env.ACCESS_TOKEN ?? credentials.secretValueFromJson('ACCESS_TOKEN').toString(),
-        ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? credentials.secretValueFromJson('ACCESS_TOKEN_SECRET').toString(),
-        API_KEY: process.env.API_KEY ?? credentials.secretValueFromJson('API_KEY').toString(),
-        API_KEY_SECRET: process.env.API_KEY_SECRET ?? credentials.secretValueFromJson('API_KEY_SECRET').toString()
-      },
-      timeout: cdk.Duration.seconds(10),
-      tracing: Tracing.ACTIVE,
-      reservedConcurrentExecutions: 1
-    })
-
-    new events.Rule(this, 'ScheduledEvent', {
-      schedule: events.Schedule.cron({
-        minute: '*',
-        hour: '*',
-        day: '*',
-        month: '*',
-        year: '*',
+    const cluster = new ecs.Cluster(this, 'Cluster', {
+      containerInsights: true,
+      vpc: new ec2.Vpc(this, 'Vpc', {
+        natGateways: 0,
+        maxAzs: 2,
+        subnetConfiguration: [
+          {
+            cidrMask: 18,
+            name: 'Public',
+            subnetType: ec2.SubnetType.PUBLIC,
+          }
+        ]
       }),
-      targets: [
-        new eventsTargets.LambdaFunction(getTweetLambda),
-      ]
+    })
+    const taskDefinition = new ecs.TaskDefinition(this, 'TaskDefinition', {
+      compatibility: ecs.Compatibility.FARGATE,
+      cpu: '256',
+      memoryMiB: '512',
+    })
+    taskDefinition.addContainer('Container', {
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../')),
+      containerName: 'twitter-stream',
+      logging: ecs.LogDriver.awsLogs({ streamPrefix: 'twitter-stream' }),
+      environment: {
+        BEARER_TOKEN: process.env.BEARER_TOKEN!,
+      },
+    })
+    new ecs.FargateService(this, 'Service', {
+      cluster,
+      assignPublicIp: true,
+      taskDefinition,
     })
   }
 }
