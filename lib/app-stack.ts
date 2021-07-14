@@ -1,7 +1,6 @@
 import * as cdk from '@aws-cdk/core'
 import * as ecs from '@aws-cdk/aws-ecs'
 import * as ec2 from '@aws-cdk/aws-ec2'
-import * as c9 from '@aws-cdk/aws-cloud9'
 import path from 'path'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -41,9 +40,6 @@ export class AppStack extends cdk.Stack {
       cluster,
       assignPublicIp: true,
       taskDefinition,
-    })
-    new c9.Ec2Environment(this, 'Cloud9', {
-      vpc: cluster.vpc,
     })
   }
 }
