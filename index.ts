@@ -24,13 +24,11 @@ const client = new TweetsApi({
                 if (chunk.length > 2) {
                     const tweet = JSON.parse(chunk.toString('utf8')) as SingleTweetLookupResponse
                     if (tweet?.data?.lang === 'ja' && tweet.data.context_annotations) {
-                        console.log(JSON.stringify(tweet, null, 2))
+                        console.log(JSON.stringify(tweet))
                     }
                 }
             } catch (e) {
-                console.error(e, chunk.toString('utf-8'))
-            } finally {
-                console.error(chunk.length, chunk)
+                console.error(e, chunk.length, chunk.toString('utf-8'))
             }
         })
     })
