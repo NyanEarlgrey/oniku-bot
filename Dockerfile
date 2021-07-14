@@ -6,9 +6,10 @@ WORKDIR /app
 
 ADD package.json /app/package.json
 ADD package-lock.json /app/package-lock.json
+ADD tsconfig.json /app/tsconfig.json
 RUN npm ci
 
-ADD lib/client /app/lib
+ADD lib/client/ /app/lib/client/
 ADD index.ts /app/index.ts
 
 CMD npx ts-node index.ts
