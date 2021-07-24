@@ -16,3 +16,6 @@ lib/*.d.ts
 .env
 template.yaml
 lib/package*.json
+*.log
+*.jp*g
+*.png
