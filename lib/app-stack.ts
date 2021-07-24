@@ -33,6 +33,11 @@ export class AppStack extends cdk.Stack {
       containerName: 'twitter-stream',
       logging: ecs.LogDriver.awsLogs({ streamPrefix: 'twitter-stream' }),
       environment: {
+        AWS_REGION: process.env.AWS_REGION!,
+        API_KEY: process.env.API_KEY!,
+        API_SECRET_KEY: process.env.API_SECRET_KEY!,
+        ACCESS_TOKEN: process.env.ACCESS_TOKEN!,
+        ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET!,
         BEARER_TOKEN: process.env.BEARER_TOKEN!,
       },
     })
