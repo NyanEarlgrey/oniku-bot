@@ -1,5 +1,5 @@
-import client, { createTimelineRulesByUsername, deleteAllRules, Fields, logger } from './client'
-import { SingleTweetLookupResponse, Photo } from './lib/client'
+import client, { createTimelineRulesByUsername, deleteAllRules, Fields, logger } from './lib/client'
+import { SingleTweetLookupResponse, Photo } from './lib/client/'
 import axios from 'axios'
 import { Rekognition } from 'aws-sdk'
 const rekognition = new Rekognition()
