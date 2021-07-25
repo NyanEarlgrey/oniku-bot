@@ -11,8 +11,7 @@ cdk.out
 .parcel-cache
 
 #
-lib/*.js
-lib/*.d.ts
+!@types/**/*.d.ts
 .env
 template.yaml
 lib/package*.json
