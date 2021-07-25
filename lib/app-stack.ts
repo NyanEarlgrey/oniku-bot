@@ -26,13 +26,15 @@ export class AppStack extends cdk.Stack {
     const taskDefinition = new ecs.TaskDefinition(this, 'TaskDefinition', {
       compatibility: ecs.Compatibility.FARGATE,
       cpu: '256',
-      memoryMiB: '512',
+      memoryMiB: '1024',
     })
     taskDefinition.addContainer('Container', {
       image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../')),
       containerName: 'twitter-stream',
       logging: ecs.LogDriver.awsLogs({ streamPrefix: 'twitter-stream' }),
       environment: {
+        AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID!,
+        AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
         AWS_REGION: process.env.AWS_REGION!,
         API_KEY: process.env.API_KEY!,
         API_SECRET_KEY: process.env.API_SECRET_KEY!,
@@ -45,6 +47,8 @@ export class AppStack extends cdk.Stack {
       cluster,
       assignPublicIp: true,
       taskDefinition,
+      enableExecuteCommand: true,
+      platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
     })
   }
 }

@@ -7,6 +7,7 @@ WORKDIR /app
 ADD package.json /app/package.json
 ADD package-lock.json /app/package-lock.json
 ADD tsconfig.json /app/tsconfig.json
+ADD @types/ /app/@types/
 ADD lib/ /app/lib/
 ADD index.ts /app/index.ts
 RUN npm ci
