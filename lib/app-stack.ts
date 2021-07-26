@@ -1,6 +1,7 @@
 import * as cdk from '@aws-cdk/core'
 import * as ecs from '@aws-cdk/aws-ecs'
 import * as ec2 from '@aws-cdk/aws-ec2'
+import * as iam from '@aws-cdk/aws-iam'
 import path from 'path'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -26,16 +27,13 @@ export class AppStack extends cdk.Stack {
     const taskDefinition = new ecs.TaskDefinition(this, 'TaskDefinition', {
       compatibility: ecs.Compatibility.FARGATE,
       cpu: '256',
-      memoryMiB: '1024',
+      memoryMiB: '512',
     })
     taskDefinition.addContainer('Container', {
       image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../')),
       containerName: 'twitter-stream',
       logging: ecs.LogDriver.awsLogs({ streamPrefix: 'twitter-stream' }),
       environment: {
-        AWS_ACCESS_KEY_ID: process.env.AWS_ACCESS_KEY_ID!,
-        AWS_SECRET_ACCESS_KEY: process.env.AWS_SECRET_ACCESS_KEY!,
-        AWS_REGION: process.env.AWS_REGION!,
         API_KEY: process.env.API_KEY!,
         API_SECRET_KEY: process.env.API_SECRET_KEY!,
         ACCESS_TOKEN: process.env.ACCESS_TOKEN!,
@@ -43,12 +41,19 @@ export class AppStack extends cdk.Stack {
         BEARER_TOKEN: process.env.BEARER_TOKEN!,
       },
     })
+    taskDefinition.addToTaskRolePolicy(new iam.PolicyStatement({
+      actions: ['rekognition:*'],
+      resources: ['*']
+    }))
     new ecs.FargateService(this, 'Service', {
       cluster,
       assignPublicIp: true,
       taskDefinition,
       enableExecuteCommand: true,
       platformVersion: ecs.FargatePlatformVersion.VERSION1_4,
+      circuitBreaker: {
+        rollback: true,
+      }
     })
   }
 }
