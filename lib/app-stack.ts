@@ -11,6 +11,7 @@ export class AppStack extends cdk.Stack {
     super(scope, id, props)
 
     const cluster = new ecs.Cluster(this, 'Cluster', {
+      clusterName: 'oniku-bot',
       containerInsights: true,
       vpc: new ec2.Vpc(this, 'Vpc', {
         natGateways: 0,
