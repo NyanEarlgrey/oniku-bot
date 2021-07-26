@@ -84,6 +84,8 @@ export const fields: Fields = [
                                         auto_populate_reply_metadata: true,
                                     })
                                 }
+                            } else {
+                                logger.debug('KEEP_ALIVE_SIGNAL_RECEIVED')
                             }
                         } catch (error) {
                             logger.error({ error: error.toString(), chunk_length: chunk.length, chunk: chunk.toString('utf8') })
