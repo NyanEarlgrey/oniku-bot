@@ -72,8 +72,8 @@ export const fields: Fields = [
                 { responseType: 'stream' }
             )
                 .then(({ data }: { data: unknown }) => {
-                    (data as NodeJS.ReadableStream).on('data', async (chunk: Buffer) => {
-                        try {
+                    (data as NodeJS.ReadableStream)
+                        ?.on('data', async (chunk: Buffer) => {
                             /** Keep alive signal < Buffer 0d 0a > received. Do nothing. */
                             if (chunk.length > 2) {
                                 const tweet: SingleTweetLookupResponse = JSON.parse(chunk.toString('utf8'))
@@ -87,15 +87,9 @@ export const fields: Fields = [
                             } else {
                                 logger.debug('KEEP_ALIVE_SIGNAL_RECEIVED')
                             }
-                        } catch (error) {
-                            logger.error({ error: error.toString(), chunk_length: chunk.length, chunk: chunk.toString('utf8') })
-                            process.exit(1)
-                        }
-                    })
+                        })
+                    logger.debug('START_STREAM')
                 })
-                .catch(error => {
-                    logger.error({ error: error.toString() })
-                    process.exit(1)
-                })
+                .catch(error => logger.error(error.toString()))
     }
 })(process.argv.slice(2))

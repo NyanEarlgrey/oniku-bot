@@ -43,10 +43,10 @@ export type Fields = [
 export const axios = Axios.create()
 axios.interceptors.response.use(
     async (response) => {
-        // response.config.responseType !== 'stream' && logger.debug(response.data)
         return response
     },
     async (error: AxiosError) => {
+        logger.error({ status: error.response?.status, message: error.message, type: error.config.responseType })
         if (error.response?.status === 429) {
             await new Promise(r => setTimeout(r, error.response?.headers['x-rate-limit-reset'] * 1000 - Date.now()))
             return axios.request(error.config)

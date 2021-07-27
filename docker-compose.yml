@@ -1,20 +1,10 @@
 version: "3.9"
 services:
-  firelens:
-    image: amazon/aws-for-fluent-bit:2.17.0
-    ports:
-      - 24224:24224
-    env_file: .env
   twitter:
     image: node:lts-alpine
-    depends_on: ['firelens']
     restart: always
     env_file: .env
     working_dir: /app
     volumes:
       - .:/app
     command: npx ts-node index.ts
-    logging:
-      driver: fluentd
-      options:
-        fluentd-address: localhost:24224
