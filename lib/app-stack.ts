@@ -2,6 +2,7 @@ import * as cdk from '@aws-cdk/core'
 import * as ecs from '@aws-cdk/aws-ecs'
 import * as ec2 from '@aws-cdk/aws-ec2'
 import * as iam from '@aws-cdk/aws-iam'
+import * as logs from '@aws-cdk/aws-logs'
 import path from 'path'
 import dotenv from 'dotenv'
 dotenv.config()
@@ -25,6 +26,11 @@ export class AppStack extends cdk.Stack {
         ]
       }),
     })
+    const logGroup = new logs.LogGroup(this, 'LogGroup', {
+      logGroupName: cluster.clusterName,
+      retention: logs.RetentionDays.ONE_WEEK,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+    })
     const taskDefinition = new ecs.TaskDefinition(this, 'TaskDefinition', {
       compatibility: ecs.Compatibility.FARGATE,
       cpu: '256',
@@ -33,7 +39,10 @@ export class AppStack extends cdk.Stack {
     taskDefinition.addContainer('Container', {
       image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../')),
       containerName: 'twitter-stream',
-      logging: ecs.LogDriver.awsLogs({ streamPrefix: 'twitter-stream' }),
+      logging: ecs.LogDriver.awsLogs({
+        streamPrefix: 'twitter-stream',
+        logGroup,
+      }),
       environment: {
         API_KEY: process.env.API_KEY!,
         API_SECRET_KEY: process.env.API_SECRET_KEY!,
