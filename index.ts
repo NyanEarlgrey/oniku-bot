@@ -9,10 +9,6 @@ export const getImageLabelsByUrl = async (url: string) => await rekognition.dete
     MinConfidence: 75
 }).promise()
 
-interface LabelPhoto extends Photo {
-    labels: Rekognition.Label[]
-}
-
 export const isNikuTweet = async (tweet: SingleTweetLookupResponse) => {
     const niku = [
         'Bacon',
@@ -25,13 +21,12 @@ export const isNikuTweet = async (tweet: SingleTweetLookupResponse) => {
         'Ribs',
         'Steak',
     ]
-    const photos = (await Promise.all((tweet.includes?.media
-        ?.filter(medium => medium.type === 'photo') as Photo[])
-        .map<Promise<LabelPhoto>>(async (photo) => {
+    const photos = await Promise.all((tweet.includes?.media
+        ?.filter(medium => medium.type === 'photo') as Photo[] | undefined)
+        ?.map(async (photo) => {
             const labels = (await getImageLabelsByUrl(photo.url!)).Labels!
             return { ...photo, labels }
-        })
-    ))
+        }) ?? [])
     logger.info({ photos, tweet })
     return photos.some(photo => photo.labels.some(label => niku.includes(label.Name!)))
 }
