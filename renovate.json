@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "dependencyDashboard": true,
+  "labels": [
+    "dependencies",
+    "renovate"
+  ],
+  "packageRules": [
+    {
+      "groupName": "aws-sdk",
+      "matchPackagePrefixes": [
+        "@types/aws-",
+        "aws-sdk"
+      ],
+      "automerge": true,
+      "requiredStatusChecks": null
+    },
+    {
+      "groupName": "aws-cdk",
+      "matchPackagePatterns": [
+        "^@aws-cdk/",
+        "^aws-cdk$"
+      ],
+      "automerge": true,
+      "requiredStatusChecks": null
+    },
+    {
+      "groupName": "jest",
+      "matchPackagePatterns": [
+        "^@types/jest"
+      ],
+      "matchSourceUrlPrefixes": [
+        "https://github.com/facebook/jest",
+        "https://github.com/kulshekhar/ts-jest"
+      ],
+      "automerge": true,
+      "requiredStatusChecks": null
+    }
+  ]
+}
