@@ -14,7 +14,7 @@
     "generate": "docker run --rm -v $PWD:/local openapitools/openapi-generator-cli generate -i https://api.twitter.com/2/openapi.json -g typescript-axios -o /local/lib/client"
   },
   "devDependencies": {
-    "@aws-cdk/assert": "^1.115.0",
+    "@aws-cdk/assert": "^2.0.0",
     "@aws-cdk/aws-ec2": "^1.115.0",
     "@aws-cdk/aws-ecs": "^1.115.0",
     "@aws-cdk/aws-lambda-nodejs": "^1.115.0",
@@ -22,7 +22,7 @@
     "@types/aws-lambda": "^8.10.80",
     "@types/jest": "^26.0.24",
     "@types/node": "16.11.11",
-    "aws-cdk": "^1.115.0",
+    "aws-cdk": "^2.0.0",
     "esbuild": "^0.14.0",
     "jest": "^27.0.6",
     "npm-check-updates": "^11.8.3",
