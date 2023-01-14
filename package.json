@@ -23,7 +23,7 @@
     "@types/jest": "^26.0.24",
     "@types/node": "18.11.18",
     "aws-cdk": "^2.0.0",
-    "esbuild": "^0.16.0",
+    "esbuild": "^0.17.0",
     "jest": "^27.0.6",
     "npm-check-updates": "^11.8.3",
     "ts-jest": "^27.0.4",
